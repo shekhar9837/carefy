@@ -9,6 +9,7 @@ import { z } from "zod";
 import { Form } from "@/components/ui/form";
 import "react-phone-number-input/style.css";
 import CustomFormField, { FormFieldType } from "../CustomFormField";
+import SubmitButton from "../SubmitButton";
 
 const inputData = z.object({
   name: z.string().trim().min(1, "Name is required"), 
@@ -17,6 +18,7 @@ const inputData = z.object({
 })
 
 export const PatientForm = () => {
+    const [isLoading, setisLoading] = useState(false)
     
 
     const form = useForm<z.infer <typeof inputData>>({
@@ -69,9 +71,7 @@ export const PatientForm = () => {
           placeholder="(555) 123-4567"
         />
 
-        <button>submit</button>
-
-        {/* <SubmitButton isLoading={isLoading}>Get Started</SubmitButton> */}
+        <SubmitButton isLoading={isLoading}>Get Started</SubmitButton>
       </form>
     </Form>
   );
