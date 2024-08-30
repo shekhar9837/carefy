@@ -7,33 +7,47 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Form } from "@/components/ui/form";
+import { createUser } from "@/lib/actions/patient.actions";
+import { UserFormValidation } from "@/lib/validation";
+
 import "react-phone-number-input/style.css";
 import CustomFormField, { FormFieldType } from "../CustomFormField";
 import SubmitButton from "../SubmitButton";
 
-const inputData = z.object({
-  name: z.string().trim().min(1, "Name is required"), 
-  email: z.string().email("Invalid email address"),   
-  phone: z.string()
-})
-
 export const PatientForm = () => {
-    const [isLoading, setisLoading] = useState(false)
-    
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
-    const form = useForm<z.infer <typeof inputData>>({
-        resolver: zodResolver(inputData),
-        defaultValues: {
-          name: "",
-          email: "",
-          phone: "",
-        },
-      });
+  const form = useForm<z.infer<typeof UserFormValidation>>({
+    resolver: zodResolver(UserFormValidation),
+    defaultValues: {
+      name: "",
+      email: "",
+      phone: "",
+    },
+  });
 
-     function onSubmit(values: z.infer<typeof inputData>){
-      console.log(values)
-     }
- 
+  const onSubmit = async (values: z.infer<typeof UserFormValidation>) => {
+    setIsLoading(true);
+
+    try {
+      const user = {
+        name: values.name,
+        email: values.email,
+        phone: values.phone,
+      };
+
+      const newUser = await createUser(user);
+
+      if (newUser ) {
+        router.push(`/patients/${newUser.$id}/register`);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    setIsLoading(false);
+  };
 
   return (
     <Form {...form}>
