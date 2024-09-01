@@ -22,6 +22,10 @@ import CustomFormField, { FormFieldType } from "../CustomFormField";
 import SubmitButton from "../SubmitButton";
 import { Form } from "../ui/form";
 
+const getUserTimeZone = () => {
+  return Intl.DateTimeFormat().resolvedOptions().timeZone;
+};
+
 export const AppointmentForm = ({
   userId,
   patientId,
@@ -71,7 +75,7 @@ export const AppointmentForm = ({
     }
 
     try {
-      const timeZone = getUserTimeZone(); // Get the user's time zone
+      const timeZone = getUserTimeZone(); 
 
 
       if (type === "create" && patientId) {
