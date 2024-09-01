@@ -71,6 +71,9 @@ export const AppointmentForm = ({
     }
 
     try {
+      const timeZone = getUserTimeZone(); // Get the user's time zone
+
+
       if (type === "create" && patientId) {
         const appointment = {
           userId,
@@ -101,6 +104,7 @@ export const AppointmentForm = ({
             cancellationReason: values.cancellationReason,
           },
           type,
+          timeZone
         };
 
         const updatedAppointment = await updateAppointment(appointmentToUpdate);
