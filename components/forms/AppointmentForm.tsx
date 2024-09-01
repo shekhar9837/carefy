@@ -72,7 +72,7 @@ export const AppointmentForm = ({
 
     try {
       if (type === "create" && patientId) {
-        const newAppointment = await createAppointment({
+        const appointment = {
           userId,
           patient: patientId,
           primaryPhysician: values.primaryPhysician,
@@ -80,7 +80,9 @@ export const AppointmentForm = ({
           reason: values.reason!,
           status: status as Status,
           note: values.note,
-        });
+        };
+
+        const newAppointment = await createAppointment(appointment);
 
         if (newAppointment) {
           form.reset();
@@ -88,12 +90,10 @@ export const AppointmentForm = ({
             `/patients/${userId}/new-appointment/success?appointmentId=${newAppointment.$id}`
           );
         }
-      } 
-
-      if (type !== "create" && appointment?.$id) {
-        const updatedAppointment = await updateAppointment({
+      } else {
+        const appointmentToUpdate = {
           userId,
-          appointmentId: appointment.$id,
+          appointmentId: appointment?.$id!,
           appointment: {
             primaryPhysician: values.primaryPhysician,
             schedule: new Date(values.schedule),
@@ -101,7 +101,9 @@ export const AppointmentForm = ({
             cancellationReason: values.cancellationReason,
           },
           type,
-        });
+        };
+
+        const updatedAppointment = await updateAppointment(appointmentToUpdate);
 
         if (updatedAppointment) {
           setOpen && setOpen(false);
@@ -111,7 +113,6 @@ export const AppointmentForm = ({
     } catch (error) {
       console.log(error);
     }
-
     setIsLoading(false);
   };
 
@@ -124,7 +125,7 @@ export const AppointmentForm = ({
       buttonLabel = "Schedule Appointment";
       break;
     default:
-      buttonLabel = "Submit Appointment";
+      buttonLabel = "Submit Apppointment";
   }
 
   return (
@@ -174,16 +175,14 @@ export const AppointmentForm = ({
             />
 
             <div
-              className={`flex flex-col gap-6  ${
-                type === "create" && "xl:flex-row"
-              }`}
+              className={`flex flex-col gap-6  ${type === "create" && "xl:flex-row"}`}
             >
               <CustomFormField
                 fieldType={FormFieldType.TEXTAREA}
                 control={form.control}
                 name="reason"
                 label="Appointment reason"
-                placeholder="Annual monthly check-up"
+                placeholder="Annual montly check-up"
                 disabled={type === "schedule"}
               />
 
@@ -211,9 +210,7 @@ export const AppointmentForm = ({
 
         <SubmitButton
           isLoading={isLoading}
-          className={`${
-            type === "cancel" ? "shad-danger-btn" : "shad-primary-btn"
-          } w-full`}
+          className={`${type === "cancel" ? "shad-danger-btn" : "shad-primary-btn"} w-full`}
         >
           {buttonLabel}
         </SubmitButton>

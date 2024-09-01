@@ -1,7 +1,6 @@
 "use server";
 
-import { ID, Query } from "node-appwrite";
-import {InputFile} from "node-appwrite/file";
+import { ID, InputFile, Query } from "node-appwrite";
 
 import {
   BUCKET_ID,
@@ -18,7 +17,6 @@ import { parseStringify } from "../utils";
 // CREATE APPWRITE USER
 export const createUser = async (user: CreateUserParams) => {
   try {
-    // Create new user -> https://appwrite.io/docs/references/1.5.x/server-nodejs/users#create
     const newuser = await users.create(
       ID.unique(),
       user.email,
@@ -64,7 +62,9 @@ export const registerPatient = async ({
     // Upload file ->  // https://appwrite.io/docs/references/cloud/client-web/storage#createFile
     let file;
     if (identificationDocument) {
-      const inputFile = InputFile.fromBuffer(
+      const inputFile =
+        identificationDocument &&
+        InputFile.fromBlob(
           identificationDocument?.get("blobFile") as Blob,
           identificationDocument?.get("fileName") as string
         );

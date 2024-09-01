@@ -1,30 +1,35 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Form, FormControl } from "@/components/ui/form";
-import { createUser, registerPatient } from "@/lib/actions/patient.actions";
-import { PatientFormValidation, UserFormValidation } from "@/lib/validation";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { SelectItem } from "@/components/ui/select";
+import {
+  Doctors,
+  GenderOptions,
+  IdentificationTypes,
+  PatientFormDefaultValues,
+} from "@/constants";
+import { registerPatient } from "@/lib/actions/patient.actions";
+import { PatientFormValidation } from "@/lib/validation";
 
+import "react-datepicker/dist/react-datepicker.css";
 import "react-phone-number-input/style.css";
 import CustomFormField, { FormFieldType } from "../CustomFormField";
-import SubmitButton from "../SubmitButton";
-import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
-import { Doctors, GenderOptions, IdentificationTypes, PatientFormDefaultValues } from "@/constants";
-import { Label } from "../ui/label";
-import { SelectItem } from "../ui/select";
-import Image from "next/image";
 import { FileUploader } from "../FileUploader";
+import SubmitButton from "../SubmitButton";
 
-export const RegisterForm = ({user }: {user:User}) => {
+const RegisterForm = ({ user }: { user: User }) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
-  
   const form = useForm<z.infer<typeof PatientFormValidation>>({
     resolver: zodResolver(PatientFormValidation),
     defaultValues: {
@@ -80,7 +85,6 @@ export const RegisterForm = ({user }: {user:User}) => {
         privacyConsent: values.privacyConsent,
       };
 
-      // @ts-ignore
       const newPatient = await registerPatient(patient);
 
       if (newPatient) {
@@ -95,7 +99,10 @@ export const RegisterForm = ({user }: {user:User}) => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="flex-1 space-y-6">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex-1 space-y-12"
+      >
         <section className="space-y-4">
           <h1 className="header">Welcome 👋</h1>
           <p className="text-dark-700">Let us know more about yourself.</p>
@@ -105,19 +112,20 @@ export const RegisterForm = ({user }: {user:User}) => {
           <div className="mb-9 space-y-1">
             <h2 className="sub-header">Personal Information</h2>
           </div>
-        </section>
 
-        <CustomFormField
-          fieldType={FormFieldType.INPUT}
-          control={form.control}
-          name="name"
-          label="Full name"
-          placeholder="John Doe"
-          iconSrc="/assets/icons/user.svg"
-          iconAlt="user"
-        />
+          {/* NAME */}
 
-<div className="flex flex-col gap-6 xl:flex-row">
+          <CustomFormField
+            fieldType={FormFieldType.INPUT}
+            control={form.control}
+            name="name"
+            placeholder="John Doe"
+            iconSrc="/assets/icons/user.svg"
+            iconAlt="user"
+          />
+
+          {/* EMAIL & PHONE */}
+          <div className="flex flex-col gap-6 xl:flex-row">
             <CustomFormField
               fieldType={FormFieldType.INPUT}
               control={form.control}
@@ -137,6 +145,7 @@ export const RegisterForm = ({user }: {user:User}) => {
             />
           </div>
 
+          {/* BirthDate & Gender */}
           <div className="flex flex-col gap-6 xl:flex-row">
             <CustomFormField
               fieldType={FormFieldType.DATE_PICKER}
@@ -171,7 +180,7 @@ export const RegisterForm = ({user }: {user:User}) => {
             />
           </div>
 
-
+          {/* Address & Occupation */}
           <div className="flex flex-col gap-6 xl:flex-row">
             <CustomFormField
               fieldType={FormFieldType.INPUT}
@@ -189,25 +198,8 @@ export const RegisterForm = ({user }: {user:User}) => {
               placeholder=" Software Engineer"
             />
           </div>
-          <div className="flex flex-col gap-6 xl:flex-row">
-            <CustomFormField
-              fieldType={FormFieldType.INPUT}
-              control={form.control}
-              name="address"
-              label="Address"
-              placeholder="14 street, New york, NY - 5101"
-            />
 
-            <CustomFormField
-              fieldType={FormFieldType.INPUT}
-              control={form.control}
-              name="occupation"
-              label="Occupation"
-              placeholder=" Software Engineer"
-            />
-          </div>
-            
-
+          {/* Emergency Contact Name & Emergency Contact Number */}
           <div className="flex flex-col gap-6 xl:flex-row">
             <CustomFormField
               fieldType={FormFieldType.INPUT}
@@ -225,10 +217,9 @@ export const RegisterForm = ({user }: {user:User}) => {
               placeholder="(555) 123-4567"
             />
           </div>
-          {/* </section> */}
+        </section>
 
-
-          <section className="space-y-6">
+        <section className="space-y-6">
           <div className="mb-9 space-y-1">
             <h2 className="sub-header">Medical Information</h2>
           </div>
@@ -314,7 +305,6 @@ export const RegisterForm = ({user }: {user:User}) => {
             />
           </div>
         </section>
-            
 
         <section className="space-y-6">
           <div className="mb-9 space-y-1">
@@ -385,16 +375,10 @@ export const RegisterForm = ({user }: {user:User}) => {
           />
         </section>
 
-        
-
-
-        
-
-        
-
-
-        <SubmitButton isLoading={isLoading}>Get Started</SubmitButton>
+        <SubmitButton isLoading={isLoading}>Submit and Continue</SubmitButton>
       </form>
     </Form>
   );
 };
+
+export default RegisterForm;
