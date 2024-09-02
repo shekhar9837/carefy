@@ -15,13 +15,13 @@ const AdminPage = async () => {
         <Link href="/" className="cursor-pointer">
           <div clasName="flex items-start gap-2">
           <Image
-            src="/assets/icons/logo-icon.png"
+            src="/assets/icons/logo-icon.svg"
             height={32}
-            width={162}
+            width={32}
             alt="logo"
             className="h-8 w-fit"
           />
-          <h1 className='text-[2.8rem] font-bold'>CareFy</h1>
+          <h1 className='text-[1.8rem] font-bold'>CareFy</h1>
           </div>
         </Link>
 
